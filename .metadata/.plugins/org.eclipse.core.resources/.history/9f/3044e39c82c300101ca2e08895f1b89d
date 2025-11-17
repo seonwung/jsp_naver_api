@@ -1,0 +1,75 @@
+package com.project.naver;
+
+import java.io.*;
+import java.net.*;
+import java.util.HashMap;
+import java.util.Map;
+
+public class NaverSearchAPI {
+
+    private static final String CLIENT_ID = "YOUR_CLIENT_ID";
+    private static final String CLIENT_SECRET = "YOUR_CLIENT_SECRET";
+
+    // 🔹 지식인 검색 메서드: 검색어 + 최대 100건
+    public static String searchKin(String query, int display) {
+        try {
+            String text = URLEncoder.encode(query, "UTF-8");
+            String apiURL = "https://openapi.naver.com/v1/search/kin?query=" + text
+                          + "&display=" + display;   // ← 최대 100까지 가능
+
+            Map<String, String> headers = new HashMap<>();
+            headers.put("X-Naver-Client-Id", CLIENT_ID);
+            headers.put("X-Naver-Client-Secret", CLIENT_SECRET);
+
+            return get(apiURL, headers);
+
+        } catch (Exception e) {
+            throw new RuntimeException("지식인 검색 실패", e);
+        }
+    }
+
+    private static String get(String apiUrl, Map<String, String> requestHeaders) {
+        HttpURLConnection con = connect(apiUrl);
+        try {
+            con.setRequestMethod("GET");
+            for (Map.Entry<String, String> header : requestHeaders.entrySet()) {
+                con.setRequestProperty(header.getKey(), header.getValue());
+            }
+
+            int responseCode = con.getResponseCode();
+            InputStream body = (responseCode == HttpURLConnection.HTTP_OK)
+                    ? con.getInputStream()
+                    : con.getErrorStream();
+
+            return readBody(body);
+        } catch (IOException e) {
+            throw new RuntimeException("API 요청/응답 중 오류", e);
+        } finally {
+            con.disconnect();
+        }
+    }
+
+    private static HttpURLConnection connect(String apiUrl) {
+        try {
+            URL url = new URL(apiUrl);
+            return (HttpURLConnection) url.openConnection();
+        } catch (Exception e) {
+            throw new RuntimeException("연결 실패: " + apiUrl, e);
+        }
+    }
+
+    private static String readBody(InputStream body) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(body))) {
+            StringBuilder sb = new StringBuilder();
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+
+            return sb.toString();
+        } catch (IOException e) {
+            throw new RuntimeException("응답 읽기 실패", e);
+        }
+    }
+}
