@@ -9,7 +9,6 @@ CREATE TABLE kin_question (
     title       VARCHAR(255)    NOT NULL, 
     url         VARCHAR(500)    NOT NULL,     
     q_content   TEXT            NULL,        
-    q_date      DATE            NULL,          
-    q_category  VARCHAR(255)    NULL,         
     created_at  DATETIME        DEFAULT CURRENT_TIMESTAMP 
 );
+
