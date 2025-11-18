@@ -5,7 +5,7 @@
 <%
     String query = request.getParameter("query");
     if (query == null) query = "";
-
+//
     List<KinDTO> list = (List<KinDTO>) request.getAttribute("list");
 %>
 

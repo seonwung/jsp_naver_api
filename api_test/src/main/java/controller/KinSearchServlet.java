@@ -30,17 +30,20 @@ public class KinSearchServlet extends HttpServlet {
 
         String query = request.getParameter("query");// kin_search.jsp에서 검색버튼 누르면
 
-        // 1) 처음 들어온 경우 (검색어 X) → 그냥 검색 페이지로만 보냄
+        // 1) 검색어에 빈칸입력했을때 
         if (query == null || query.trim().isEmpty()) {
             RequestDispatcher rd = request.getRequestDispatcher("/kin_search.jsp");
-            rd.forward(request, response);
+            //매개변수의 주소로 포워드할 준비를 하는것
+            rd.forward(request, response);// jsp에게 요청처리 넘기기
             return;
+            //forward는 주소창 변화 없음 redirect는 바뀜
         }
 
-        // 2) 검색어가 있는 경우 → 네이버 API 호출
+        // 2) 검색어가 있는 경우 -> 네이버 API 호출
         String apiResultJson = NaverSearchAPI.searchKin(query, 100);
 
-        // 3) JSON → List<KinDTO>로 파싱
+        // 3) JSON -> List<KinDTO>로 파싱 
+        // parseKinJson 아래 직접만든 매소드
         List<KinDTO> list = parseKinJson(apiResultJson);
 
         // 4) JSP에서 쓸 수 있게 request에 담기
@@ -62,22 +65,33 @@ public class KinSearchServlet extends HttpServlet {
             return result;
         }
 
-        JsonElement root = JsonParser.parseString(json);
-        JsonObject obj = root.getAsJsonObject();
+        /*json문자열을 -> json객체로  json문자열은 json처럼 보이지만 여전히 타입은 String임
+         왜 Element냐? 
+         JsonElement = JSON 최상위 구조를 담는 가장 포괄적인 타입
+         JsonObject(키벨류),JsonArray,JsonPrimitive 뭐가 될지 모름
+          */
+         
+        JsonElement root = JsonParser.parseString(json);//뭐가 될지몰라서 JsonElement로 
+        
+        
+        JsonObject obj = root.getAsJsonObject();// JsonObject로 확정 이제 key로 접근 가능
 
-        JsonArray items = obj.getAsJsonArray("items");
+        JsonArray items = obj.getAsJsonArray("items"); 
+        //"items"라는 key에 들어있는 배열 전체를 꺼낸 상태.
         if (items == null) return result;
 
+        //Gson은 JsonArray에서 요소를 꺼낼 때 일단 JsonElement로 꺼낸다.
         for (JsonElement el : items) {
-            JsonObject item = el.getAsJsonObject();
+            JsonObject item = el.getAsJsonObject();// JsonObject로 확정
 
             // 네이버 검색 API '지식인' 항목 기준 필드명
-            String title     = getAsString(item, "title");
-            String url       = getAsString(item, "link");       
-            String qContent = getAsString(item, "description"); 
+            // safeGetAsString(item,"A") -> item에서 A의 값을 꺼내주는 함수
+            String title     = safeGetAsString(item, "title");
+            String url       = safeGetAsString(item, "link");       
+            String qContent = safeGetAsString(item, "description"); 
     
 
-            // 필요하면 <b>태그 같은 HTML 태그 제거
+            // <b>태그 같은 HTML 태그 제거
             title = stripTag(title);
             qContent   = stripTag( qContent );
 
@@ -89,13 +103,13 @@ public class KinSearchServlet extends HttpServlet {
     }
 
     // JSON에서 문자열 꺼낼 때 NPE 방지용 헬퍼
-    private String getAsString(JsonObject obj, String memberName) {
+    private String safeGetAsString(JsonObject obj, String memberName) {
         JsonElement el = obj.get(memberName);
         if (el == null || el.isJsonNull()) return "";
-        return el.getAsString();
+        return el.getAsString(); //여기서의  getAsString()는 Gson에서 제공하는 메서드 Json->String
     }
 
-    // 아주 단순한 HTML 태그 제거용 (정교하지 않아도 과제에는 충분)
+    //  HTML 태그 제거용 
     private String stripTag(String s) {
         if (s == null) return "";
         return s.replaceAll("<.*?>", "");
