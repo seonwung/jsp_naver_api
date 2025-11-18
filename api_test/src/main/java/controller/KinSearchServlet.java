@@ -39,12 +39,17 @@ public class KinSearchServlet extends HttpServlet {
             //forward는 주소창 변화 없음 redirect는 바뀜
         }
 
-        // 2) 검색어가 있는 경우 -> 네이버 API 호출
+        // 2) 검색어가 있는 경우 -> 네이버 API 호출 (최대 100건)
         String apiResultJson = NaverSearchAPI.searchKin(query, 100);
 
         // 3) JSON -> List<KinDTO>로 파싱 
         // parseKinJson 아래 직접만든 매소드
         List<KinDTO> list = parseKinJson(apiResultJson);
+        
+        //**추가 db 저장 로직**
+        //KinSaveServlet에서 이 데이터를 꺼내어 DB에 저장
+        HttpSession session = request.getSession();
+        session.setAttribute("searchListForSave", list);
 
         // 4) JSP에서 쓸 수 있게 request에 담기
         request.setAttribute("query", query);

@@ -1,6 +1,12 @@
 package model;
+import java.io.Serializable;
 
-public class KinDTO {
+//**Serializable 인터페이스 구현 추가 **
+//미구현시 KinDTA클래스는 직렬화 불가. DTO클래스가 세션을통해 정상 저장,로드 되려면 Serializable인터페이스 구현 필요함
+public class KinDTO implements Serializable {
+	
+	// 버전 UID 추가 (경고 제거 및 안정성 확보를 위해 권장)
+	private static final long serialVersionUID = 1L;
 
     private int kId;            // DB PK
     private String title;       // 질문 제목
