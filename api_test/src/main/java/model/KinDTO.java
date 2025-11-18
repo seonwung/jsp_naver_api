@@ -6,8 +6,7 @@ public class KinDTO {
     private String title;       // 질문 제목
     private String url;         // 질문 URL
     private String qContent;    // 질문 내용(description)
-    private String qDate;       // 질문 등록 날짜(postdate)
-    private String qCategory;   // 카테고리(category)
+ 
 
     // 1. 기본 생성자
     public KinDTO() {}
