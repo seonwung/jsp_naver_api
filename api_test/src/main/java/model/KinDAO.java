@@ -68,4 +68,51 @@ public int insertKinList(List<KinDTO> list) throws SQLException {
         
         return insertedCount;
     }
+
+public int countAll() throws SQLException {
+    String sql = "SELECT COUNT(*) FROM kin_question";
+
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement pstmt = conn.prepareStatement(sql);
+         ResultSet rs = pstmt.executeQuery()) {
+
+        if (rs.next()) {
+            return rs.getInt(1);
+        } else {
+            return 0;
+        }
+    }
+}
+
+//  offset/limit 기준으로 한 페이지 데이터 가져오기
+public List<KinDTO> selectPage(int offset, int limit) throws SQLException {
+    List<KinDTO> list = new ArrayList<>();
+
+  
+    String sql = "SELECT k_id, title, url, q_content, created_at " +
+            "FROM kin_question " +
+            "ORDER BY k_id DESC " +     
+            "LIMIT ? OFFSET ?";
+
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+        pstmt.setInt(1, limit);
+        pstmt.setInt(2, offset);
+
+        try (ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                String title = rs.getString("title");
+                String url = rs.getString("url");
+                String qContent = rs.getString("q_content");
+
+                KinDTO dto = new KinDTO(title, url, qContent);
+                list.add(dto);
+            }
+        }
+    }
+
+    return list;
+}
+
 }

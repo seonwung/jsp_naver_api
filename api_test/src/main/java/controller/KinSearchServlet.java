@@ -1,6 +1,7 @@
 package controller;
 
 import model.KinDTO;
+import api.AdultCheckAPI;
 import api.NaverSearchAPI;
 import com.google.gson.*;
 
@@ -37,6 +38,13 @@ public class KinSearchServlet extends HttpServlet {
             rd.forward(request, response);// jsp에게 요청처리 넘기기
             return;
             //forward는 주소창 변화 없음 redirect는 바뀜
+        }
+        // query가 성인 검색어면, 검색/저장 로직으로 가지 않고 바로 JSP로 돌려보냄
+        if (AdultCheckAPI.isAdultKeyword(query)) {
+            request.setAttribute("errorMsg", "성인 검색어는 검색할 수 없습니다.");
+            RequestDispatcher rd = request.getRequestDispatcher("/kin_search.jsp");
+            rd.forward(request, response);
+            return;
         }
 
         // 2) 검색어가 있는 경우 -> 네이버 API 호출 (최대 100건)

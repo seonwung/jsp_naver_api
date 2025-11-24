@@ -12,14 +12,9 @@ import java.util.Map;
 
 public class NaverSearchAPI {
 
-
 	 private static final String CLIENT_ID = "y4b4A3ygovAPowPzQuUD";
 	    private static final String CLIENT_SECRET = "rUR5NEiayl";
 
-	    
-	    
-	    
-	    
 	    //지식인 검색 메서드: 검색어 + 최대 100건
 	    public static String searchKin(String query, int display) {
 	        try {

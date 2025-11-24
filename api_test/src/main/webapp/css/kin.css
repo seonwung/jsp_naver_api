@@ -1,3 +1,6 @@
+/* -------------------------------------------------------
+   전체 공통 스타일
+--------------------------------------------------------*/
 body {
     font-family: Arial, sans-serif;
     margin: 20px;
@@ -7,15 +10,22 @@ h2 {
     margin-bottom: 15px;
 }
 
+/* -------------------------------------------------------
+   검색 페이지(kin_search.jsp) 전용 스타일
+--------------------------------------------------------*/
+
+/* form이 한 줄 레이아웃을 유지하게 */
 form {
-    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
 }
 
 input[type="text"] {
     padding: 6px;
     font-size: 14px;
     width: 240px;
-    margin-right: 6px;
 }
 
 button {
@@ -32,6 +42,29 @@ button:hover {
     background-color: #357abd;
 }
 
+/* 검색 줄 + 오른쪽 링크 같은 줄 정렬 */
+.search-bar-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* 오른쪽 상단 '저장 결과 모아보기' 링크 */
+.saved-list-link {
+    font-weight: bold;
+    text-decoration: none;
+    color: #3366cc;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+}
+
+.saved-list-link:hover {
+    color: #224a99;
+    text-decoration: underline;
+}
+
+/* 검색결과 박스 */
 .result-box {
     width: 90%;
     border: 1px solid #ccc;
@@ -58,4 +91,68 @@ button:hover {
 
 .item a:hover {
     text-decoration: underline;
+}
+
+
+/* -------------------------------------------------------
+   저장결과 페이지(kin_saved_list.jsp) 전용 스타일
+   (표 + 페이지네이션)
+--------------------------------------------------------*/
+
+/* 저장된 목록 표 */
+.result-box {
+    width: 100%;
+    border: 1px solid #ccc;
+    margin-top: 15px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.saved-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.saved-table th,
+.saved-table td {
+    border: 1px solid #ccc;
+    padding: 4px 6px;
+    text-align: left;
+}
+
+.saved-table th {
+    background-color: #f2f2f2;
+}
+
+/* URL 링크 */
+.saved-table td a {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+.saved-table td a:hover {
+    text-decoration: underline;
+}
+
+/* 페이지 번호 */
+.pagination {
+    margin-top: 8px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.pagination a,
+.pagination span {
+    display: inline-block;
+    margin: 0 2px;
+    padding: 3px 6px;
+    border: 1px solid #ccc;
+    text-decoration: none;
+    color: #333;
+}
+
+.pagination .current {
+    background-color: #eee;
+    font-weight: bold;
 }

@@ -13,6 +13,9 @@
     if (saveStatus != null) {
         session.removeAttribute("saveStatus");
     }
+    
+    //성일 검색어 에러 메시지 가져오기
+    String errorMsg = (String) request.getAttribute("errorMsg");
 %>
 
 <!DOCTYPE html>
@@ -26,7 +29,15 @@
 
 <body>
 
+
 <h2>네이버 지식인 검색</h2>
+
+<!-- 성인 검색 -->
+<% if (errorMsg != null) { %>
+    <p style="color:red; font-weight:bold; font-size:18px;">
+        <%= errorMsg %>
+    </p>
+<% } %>
 
 <%
     // ** 추가 저장 상태 메시지 출력 로직 **
@@ -37,16 +48,23 @@
     }
 %>
 
-<form action="<%= request.getContextPath() %>/kin/search" method="get">  <!-- 이거쓰는이유 -->
-    <input type="text" name="query" value="<%= query %>" placeholder="검색어 입력">
-    <button type="submit">검색</button>
-<!-- 절대경로로 지정 -->
-    <% if (list != null && !list.isEmpty()) { %>
-        <button type="submit" formaction="<%= request.getContextPath() %>/kin/save">저장</button>
-    <% } %>
-</form>
+    <div class="search-bar-row">
+        <form action="<%= request.getContextPath() %>/kin/search" method="get">
+            <input type="text" name="query" value="<%= query %>" placeholder="검색어 입력">
+            <button type="submit">검색</button>
 
-<hr>
+            <% if (list != null && !list.isEmpty()) { %>
+                <button type="submit" formaction="<%= request.getContextPath() %>/kin/save">저장</button>
+            <% } %>
+        </form>
+
+        <a href="<%= request.getContextPath() %>/kin/saved-list"
+           class="saved-list-link">
+            저장 결과 모아보기
+        </a>
+    </div>
+
+    <hr>
 
 <div class="result-box">
 
