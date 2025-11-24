@@ -12,7 +12,7 @@ public class AdultCheckAPI {
     private static final String CLIENT_ID = "y4b4A3ygovAPowPzQuUD";
     private static final String CLIENT_SECRET = "rUR5NEiayl";
 
-    // 🔥 이 메서드를 Servlet에서 호출하면 됨
+    //  이 메서드를 Servlet에서 호출하면 됨
     public static boolean isAdultKeyword(String query) {
         try {
             String text = URLEncoder.encode(query, "UTF-8");
